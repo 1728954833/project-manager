@@ -1,1 +1,1 @@
-{}
+{"compliance-app":{"name":"compliance-app","path":"/Users/liu/mydir/2021-3-1/wallex-app","description":"compliance-app后端","execUnit":{"start":{"name":"start","description":"启动","exec":"npm run start:local-cavalry"},"cat":{"name":"cat","description":"查看package.json","exec":"cat package.json"}}}}

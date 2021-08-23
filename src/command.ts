@@ -2,12 +2,13 @@ import { Command } from 'commander';
 import {
   saveProject,
   getProjects,
-  existsProject,
   deleteProject,
+  saveProjectExecUnit,
+  getProject,
 } from './util/project';
-import { ProjectItem } from './interface';
+import { ExecUnit, ProjectItem } from './interface';
 import chalk from 'chalk';
-import { openVsCode } from './util/system';
+import { execOrder, openVsCode } from './util/system';
 import { prompt } from 'inquirer';
 
 const program = new Command();
@@ -15,6 +16,17 @@ const program = new Command();
 program
   .version(`project-manager ${require('../package.json').version}`)
   .usage('<command>');
+
+program
+  .command('list')
+  .description('list all your project')
+  .action(async () => {
+    const projects = await getProjects();
+    if (Object.keys(projects).length === 0) {
+      return console.log(`dont have project, please add`);
+    }
+    console.table(projects, ['path', 'description']);
+  });
 
 program
   .command('add <name>')
@@ -35,26 +47,19 @@ program
         name,
         path,
         description,
-        excuUnit: {},
+        execUnit: {},
       };
 
-      const [isExists] = await existsProject(name);
-      if (isExists) {
-        const { approvel } = await prompt({
+      const exists = await getProject(name);
+      if (exists) {
+        const { approval } = await prompt({
           type: 'confirm',
           message: 'Already have this project, Do you need to overwrite',
           name: 'approvel',
         });
-        if (!approvel) return;
+        if (!approval) return;
       }
       await saveProject(name, project);
-      console.log(
-        chalk.blue(
-          `success save project ${chalk.yellow(
-            `[name:${name}]:[path:${path}]`
-          )}`
-        )
-      );
     }
   );
 
@@ -62,24 +67,13 @@ program
   .command('remove <name>')
   .description('delete project item')
   .action(async (name: string) => {
-    const [isExists] = await existsProject(name);
-    if (!isExists) {
-      console.log(chalk.red(`delete ${name} error, dont have this project`));
-      return;
+    const exists = await getProject(name);
+    if (!exists) {
+      return console.log(
+        chalk.red(`delete ${name} error, dont have this project`)
+      );
     }
     await deleteProject(name);
-    console.log(chalk.blue(`success delete project ${name}`));
-  });
-
-program
-  .command('list')
-  .description('list all your project')
-  .action(async () => {
-    const projects = await getProjects();
-    if (Object.keys(projects).length === 0) {
-      return console.log(`dont have project, please add`);
-    }
-    console.table(projects, ['path', 'description']);
   });
 
 program
@@ -107,6 +101,87 @@ program
     } else {
       console.log(chalk.red(`open ${name} error, dont have this project`));
     }
+  });
+
+program
+  .command('exec-list <name>')
+  .description('list project exec list')
+  .action(async (name: string) => {
+    const project = await getProject(name);
+
+    if (!project) {
+      return console.log(chalk.red(`run error, dont have this project`));
+    }
+
+    if (!project.execUnit || Object.keys(project.execUnit).length === 0) {
+      return console.log(`dont have this order, please add`);
+    }
+
+    console.table(project.execUnit, ['exec', 'description']);
+  });
+
+program
+  .command('exec-set <name>')
+  .description('add project exec order')
+  .requiredOption('-n, --name <name>', 'input your exec name')
+  .requiredOption('-e, --exec <exec>', 'input your exec order')
+  .requiredOption(
+    '-d, --description <description>',
+    'input your exec description'
+  )
+  .action(async (name: string, args: ExecUnit) => {
+    const project = await getProject(name);
+    if (!project) {
+      console.log(chalk.red(`set error, dont have this project`));
+    }
+    const repeat = Object.keys(project.execUnit).includes(args.name);
+    if (repeat) {
+      const { approval } = await prompt({
+        type: 'confirm',
+        message: 'have repeat order, Do you need to overwrite',
+        name: 'approvel',
+      });
+      if (!approval) return;
+    }
+    await saveProjectExecUnit(name, args);
+  });
+
+program
+  .command('exec-remove <name>')
+  .requiredOption('-n, --name <name>', 'input your exec name')
+  .action(async (name: string, args: Pick<ExecUnit, 'name'>) => {
+    const { name: execName } = args;
+    const project = await getProject(name);
+
+    if (!project) {
+      return console.log(chalk.red(`delete error, dont have this project`));
+    }
+
+    if (!project.execUnit[execName]) {
+      return console.log(chalk.red(`delete error, dont have this order`));
+    }
+
+    delete project.execUnit[execName];
+    await saveProjectExecUnit(name, project.execUnit[execName]);
+  });
+
+program
+  .command('run <name> <execName>')
+  .description('exec order')
+  .action(async (name: string, execName: string) => {
+    const project = await getProject(name);
+
+    if (!project) {
+      return console.log(chalk.red(`run error, dont have this project`));
+    }
+
+    if (!project.execUnit[execName]) {
+      return console.log(chalk.red(`run error, dont have this order`));
+    }
+
+    const execUnit = project.execUnit[execName];
+    const res = await execOrder(execUnit.exec, project.path);
+    console.log(res);
   });
 
 program.parse();

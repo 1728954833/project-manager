@@ -1,13 +1,23 @@
 import { exec } from 'child_process';
 
-export const execOrder = async (order: string) => {
+export const execOrder = async (
+  order: string,
+  path: string = process.cwd()
+) => {
   return new Promise((resolve, reject) => {
-    exec(order, err => {
-      if (err) {
-        reject(err);
+    exec(
+      order,
+      {
+        cwd: path,
+      },
+      (err, stdout, stderr) => {
+        if (err || stderr) {
+          console.log(err || stderr);
+          reject(err || stderr);
+        }
+        resolve(stdout);
       }
-      resolve(true);
-    });
+    );
   });
 };
 

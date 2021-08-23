@@ -9,7 +9,7 @@ describe('saveItem', () => {
     const project: ProjectItem = {
       name: uuid,
       path: '/Users/liu/我的项目/project-cli',
-      excuUnit: {},
+      execUnit: {},
     };
     const res = await saveProject(uuid, project);
     expect(res).toBeDefined();

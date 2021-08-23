@@ -2,14 +2,14 @@
 export interface ExecUnit {
   description: string;
   name: string;
-  order: string;
+  exec: string;
 }
 
 export interface ProjectItem {
   name: string;
   path: string;
   description?: string;
-  excuUnit: {
+  execUnit: {
     [name: string]: ExecUnit;
   };
 }
@@ -17,4 +17,3 @@ export interface ProjectItem {
 export interface ProjectFile {
   [name: string]: ProjectItem;
 }
-

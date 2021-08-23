@@ -23,24 +23,23 @@ export const deleteProject = async (name: string): Promise<boolean> => {
 };
 
 export const getProjects = async (): Promise<ProjectFile> => {
-  return await readJSON(configPath);
+  return readJSON(configPath);
 };
 
-export const existsProject = async (
-  name: string
-): Promise<[boolean, ProjectFile]> => {
+export const getProject = async (name: string): Promise<ProjectItem> => {
   const json = await readJSON(configPath);
-  return [json[name], json];
+  return json[name];
 };
 
 export const saveProjectExecUnit = async (
   name: string,
   execUnit: ExecUnit
 ): Promise<ProjectFile> => {
-  const [isExists, json] = await existsProject(name);
-  if (isExists) {
-    json[name].excuUnit = Object.assign(json[name].excuUnit, execUnit);
-    await writeJson(configPath, json);
-  }
-  return json;
+  const projects = await readJSON(configPath);
+  const project = projects[name];
+  project.execUnit = Object.assign(project.execUnit, {
+    [execUnit.name]: execUnit,
+  });
+  await writeJson(configPath, projects);
+  return projects;
 };
