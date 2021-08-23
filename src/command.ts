@@ -1,6 +1,11 @@
 import { Command } from 'commander';
-import { saveProject, getProjects, existsProject } from './util/project';
-import { ProjectAddArgs, ProjectItem } from './interface';
+import {
+  saveProject,
+  getProjects,
+  existsProject,
+  deleteProject,
+} from './util/project';
+import { ProjectItem } from './interface';
 import chalk from 'chalk';
 import { openVsCode } from './util/system';
 import { prompt } from 'inquirer';
@@ -18,30 +23,52 @@ program
     'input your project absolute path, the default is your current folder',
     process.cwd()
   )
+  .requiredOption(
+    '-d, --description <description>',
+    'input your project description'
+  )
   .description('add project item')
-  .action(async (name: string, args: ProjectAddArgs) => {
-    const { path } = args;
-    const project: ProjectItem = {
-      name,
-      path,
-      excuUnit: {},
-    };
+  .action(
+    async (name: string, args: Pick<ProjectItem, 'description' | 'path'>) => {
+      const { path, description } = args;
+      const project: ProjectItem = {
+        name,
+        path,
+        description,
+        excuUnit: {},
+      };
 
-    const [isExists] = await existsProject(name);
-    if (isExists) {
-      const { approvel } = await prompt({
-        type: 'confirm',
-        message: 'Already have this project, Do you need to overwrite',
-        name: 'approvel',
-      });
-      if (!approvel) return;
+      const [isExists] = await existsProject(name);
+      if (isExists) {
+        const { approvel } = await prompt({
+          type: 'confirm',
+          message: 'Already have this project, Do you need to overwrite',
+          name: 'approvel',
+        });
+        if (!approvel) return;
+      }
+      await saveProject(name, project);
+      console.log(
+        chalk.blue(
+          `success save project ${chalk.yellow(
+            `[name:${name}]:[path:${path}]`
+          )}`
+        )
+      );
     }
-    await saveProject(name, project);
-    console.log(
-      chalk.blue(
-        `success save project ${chalk.yellow(`[name:${name}]:[path:${path}]`)}`
-      )
-    );
+  );
+
+program
+  .command('remove <name>')
+  .description('delete project item')
+  .action(async (name: string) => {
+    const [isExists] = await existsProject(name);
+    if (!isExists) {
+      console.log(chalk.red(`delete ${name} error, dont have this project`));
+      return;
+    }
+    await deleteProject(name);
+    console.log(chalk.blue(`success delete project ${name}`));
   });
 
 program
@@ -49,7 +76,10 @@ program
   .description('list all your project')
   .action(async () => {
     const projects = await getProjects();
-    console.table(projects, ['path']);
+    if (Object.keys(projects).length === 0) {
+      return console.log(`dont have project, please add`);
+    }
+    console.table(projects, ['path', 'description']);
   });
 
 program

@@ -4,11 +4,22 @@ import { resolve } from 'path';
 
 export const configPath = resolve(__dirname, '../../config.json');
 
-export const saveProject = async (name: string, projectItem: ProjectItem) => {
+export const saveProject = async (
+  name: string,
+  projectItem: ProjectItem
+): Promise<ProjectFile> => {
   const oldJson = await readJSON(configPath);
+
   const newJson = Object.assign(oldJson, { [name]: projectItem });
   await writeJson(configPath, newJson);
   return newJson;
+};
+
+export const deleteProject = async (name: string): Promise<boolean> => {
+  const json = await readJSON(configPath);
+  delete json[name];
+  await writeJson(configPath, json);
+  return true;
 };
 
 export const getProjects = async (): Promise<ProjectFile> => {
