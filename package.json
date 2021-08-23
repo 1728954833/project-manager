@@ -9,27 +9,32 @@
   "scripts": {
     "watch": "nodemon --watch './src' --ext 'ts, json, js' --exec 'nodemon ./index.ts'",
     "start": "ts-node src/cli.ts",
-    "build": "rimraf lib && cross-env NODE_ENV=production tsc"
+    "build": "rimraf lib && cross-env NODE_ENV=production tsc",
+    "test": "jest src/**/*"
   },
   "author": "",
   "license": "ISC",
-  "type": "module",
   "devDependencies": {
     "@types/fs-extra": "^9.0.12",
+    "@types/jest": "^27.0.1",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
     "@typescript-eslint/parser": "^4.29.2",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.1",
+    "jest": "^27.0.6",
     "nodemon": "^2.0.12",
     "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
   },
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
-    "fs-extra": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "fs-extra": "^10.0.0",
+    "uuid": "^8.3.2"
   }
 }

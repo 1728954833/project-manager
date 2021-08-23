@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true, // 生成目标文件的sourceMap文件
-    "noImplicitAny": true, // 不允许隐式的any类型
+    "noImplicitAny": false, // 不允许隐式的any类型
     "strictNullChecks": true, // 不允许把null、undefined赋值给其他类型的变量
     "noUnusedLocals": true, // 检查只声明、未使用的局部变量(只提示不报错)
     "noUnusedParameters": true, // 检查未使用的函数参数(只提示不报错)

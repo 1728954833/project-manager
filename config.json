@@ -1,0 +1,17 @@
+{
+    "1": {
+        "name": "1",
+        "path": "123",
+        "excuUnit": {}
+    },
+    "item": {
+        "name": "item",
+        "path": "/Users/liu/我的项目/project-cli",
+        "excuUnit": {}
+    },
+    "test": {
+        "name": "test",
+        "path": "/Users/liu/我的项目/project-cli",
+        "excuUnit": {}
+    }
+}

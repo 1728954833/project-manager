@@ -1,4 +1,2 @@
-import { registerAddProject, registerVersion } from './command';
-
-registerVersion();
-registerAddProject();
+require('dotenv').config({ path: '.env' });
+import './command';
