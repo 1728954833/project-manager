@@ -10,12 +10,14 @@
     "watch": "nodemon --watch './src' --ext 'ts, json, js' --exec 'nodemon ./index.ts'",
     "start": "ts-node src/cli.ts",
     "build": "rimraf lib && cross-env NODE_ENV=production tsc",
-    "test": "jest src/**/*"
+    "test": "jest src/**/* --env node",
+    "test:coverage": "jest --coverage --color --env node"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/fs-extra": "^9.0.12",
+    "@types/inquirer": "^7.3.3",
     "@types/jest": "^27.0.1",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
@@ -35,6 +37,7 @@
     "commander": "^8.1.0",
     "dotenv": "^10.0.0",
     "fs-extra": "^10.0.0",
+    "inquirer": "^8.1.2",
     "uuid": "^8.3.2"
   }
 }
