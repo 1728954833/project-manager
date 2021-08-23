@@ -1,0 +1,35 @@
+{
+  "name": "project-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "pm": "bin/index.js"
+  },
+  "scripts": {
+    "watch": "nodemon --watch './src' --ext 'ts, json, js' --exec 'nodemon ./index.ts'",
+    "start": "ts-node src/cli.ts",
+    "build": "rimraf lib && cross-env NODE_ENV=production tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.12",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.1",
+    "nodemon": "^2.0.12",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^8.1.0",
+    "fs-extra": "^10.0.0"
+  }
+}
