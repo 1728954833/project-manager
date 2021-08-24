@@ -26,7 +26,7 @@ program
     if (Object.keys(projects).length === 0) {
       return console.log(`dont have project, please add`);
     }
-    console.table(projects, ['path', 'description']);
+    console.table(projects, ['path', 'description', 'default']);
   });
 
 program
@@ -48,6 +48,7 @@ program
         name,
         path,
         description,
+        default: '',
         execUnit: {},
       };
 
@@ -148,6 +149,25 @@ program
   });
 
 program
+  .command('exec-default <name>')
+  .requiredOption('-d, --default <default>', 'set you default run order')
+  .action(async (name: string, args: { default: string }) => {
+    const project = await getProject(name);
+    if (!project) {
+      return console.log(
+        chalk.red(`set default error, dont have this project`)
+      );
+    }
+
+    if (!Object.keys(project.execUnit).includes(args.default)) {
+      return console.log(chalk.red(`set default error, dont have this order`));
+    }
+
+    project.default = args.default;
+    await saveProject(name, project);
+  });
+
+program
   .command('exec-remove <name>')
   .requiredOption('-n, --name <name>', 'input your exec name')
   .action(async (name: string, args: Pick<ExecUnit, 'name'>) => {
@@ -167,10 +187,20 @@ program
   });
 
 program
-  .command('run <name> <execName>')
+  .command('run <name>')
+  .option('-n, --execName <execName>', 'input your exec name')
   .description('exec order')
-  .action(async (name: string, execName: string) => {
+  .action(async (name: string, { name: execName }: Pick<ExecUnit, 'name'>) => {
     const project = await getProject(name);
+    if (!execName) {
+      if (project.default) {
+        execName = project.default;
+      } else {
+        return console.log(
+          chalk.red('run error, please input `-d <name>` choose your order')
+        );
+      }
+    }
 
     if (!project) {
       return console.log(chalk.red(`run error, dont have this project`));

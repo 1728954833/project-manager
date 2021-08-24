@@ -9,6 +9,7 @@ export interface ProjectItem {
   name: string;
   path: string;
   description?: string;
+  default?: string;
   execUnit: {
     [name: string]: ExecUnit;
   };

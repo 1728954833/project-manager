@@ -11,7 +11,9 @@
     "start": "ts-node src/cli.ts",
     "build": "rimraf lib && cross-env NODE_ENV=production tsc",
     "test": "jest src/**/* --env node",
-    "test:coverage": "jest --coverage --color --env node"
+    "test:coverage": "jest --coverage --color --env node",
+    "ignore:config": "git update-index --assume-unchanged ./config.json",
+    "ignore:config:clean": "git update-index --no-assume-unchanged ./config.json"
   },
   "author": "",
   "license": "ISC",
