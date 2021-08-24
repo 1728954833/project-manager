@@ -1,23 +1,21 @@
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
 
 export const execOrder = async (
   order: string,
   path: string = process.cwd()
 ) => {
   return new Promise((resolve, reject) => {
-    exec(
-      order,
-      {
+    console.log(path, order);
+    try {
+      const res = execSync(order, {
         cwd: path,
-      },
-      (err, stdout, stderr) => {
-        if (err || stderr) {
-          console.log(err || stderr);
-          reject(err || stderr);
-        }
-        resolve(stdout);
-      }
-    );
+        maxBuffer: 2000000,
+        stdio: 'inherit',
+      });
+      resolve(res);
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 
