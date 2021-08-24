@@ -1,7 +1,12 @@
 {
-  "name": "project-manager",
+  "name": "@dreamfalldown/project-manager",
   "version": "1.0.0",
-  "description": "",
+  "description": "a cli about project manager",
+  "contributors": [{
+    "name": "dreamfalldown",
+    "email": "1787833352@qq.com"
+  }],
+  "keywords": ["project", "manager", "project-manager"],
   "main": "index.js",
   "bin": {
     "pm": "bin/index.js"
@@ -15,8 +20,12 @@
     "ignore:config": "git update-index --assume-unchanged ./config.json",
     "ignore:config:clean": "git update-index --no-assume-unchanged ./config.json"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1728954833/project-manager"
+  },
+  "author": "dreamfalldown",
+  "license": "MIT",
   "devDependencies": {
     "@types/fs-extra": "^9.0.12",
     "@types/inquirer": "^7.3.3",
@@ -41,5 +50,10 @@
     "fs-extra": "^10.0.0",
     "inquirer": "^8.1.2",
     "uuid": "^8.3.2"
-  }
+  },
+  "files": [
+    "lib/",
+    "bin/",
+    "config.json"
+  ]
 }
