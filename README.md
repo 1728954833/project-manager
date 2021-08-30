@@ -59,16 +59,15 @@ Project Manager use for manager your project
 
 if you don't want use cli to set project you can use `pm config` to write your config
 
+**config key must equal name **
+
 ```json
-    // key must equal name
     "project name": {
         "name": "project name",
         "path": "path",
         "description": "description",
         "default": "default command",
-        // command list
         "execUnit": {
-            // command name must equal name
             "command name": {
                 "name": "command name",
                 "exec": "command",
@@ -77,3 +76,7 @@ if you don't want use cli to set project you can use `pm config` to write your c
         }
     }
 ```
+
+### Notice
+
+If the profile does not have permissions, the specified write permission needs to be set
