@@ -5,7 +5,6 @@ export const execOrder = async (
   path: string = process.cwd()
 ) => {
   return new Promise((resolve, reject) => {
-    console.log(path, order);
     try {
       const res = execSync(order, {
         cwd: path,

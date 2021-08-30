@@ -1,5 +1,5 @@
+import type { ExecUnit, ProjectFile, ProjectItem } from '../interface';
 import { readJSON, writeJson } from 'fs-extra';
-import { ExecUnit, ProjectFile, ProjectItem } from '../interface';
 import { resolve } from 'path';
 
 export const configPath = resolve(__dirname, '../../config.json');
