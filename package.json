@@ -1,6 +1,6 @@
 {
   "name": "@dreamfalldown/project-manager",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "a cli about project manager",
   "contributors": [{
     "name": "dreamfalldown",
@@ -22,8 +22,7 @@
     "test": "jest src/**/* --env node",
     "test:coverage": "jest src/**/* --coverage --color --env node",
     "ignore:config": "git update-index --assume-unchanged ./config.json",
-    "ignore:config:clean": "git update-index --no-assume-unchanged ./config.json",
-    "publish": "npm publish"
+    "ignore:config:clean": "git update-index --no-assume-unchanged ./config.json"
   },
   "repository": {
     "type": "git",
