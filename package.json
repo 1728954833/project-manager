@@ -6,7 +6,11 @@
     "name": "dreamfalldown",
     "email": "1787833352@qq.com"
   }],
-  "keywords": ["project", "manager", "project-manager"],
+  "keywords": [
+    "project",
+    "manager",
+    "project-manager"
+  ],
   "main": "index.js",
   "bin": {
     "pm": "bin/index.js"
@@ -16,7 +20,7 @@
     "start": "ts-node src/cli.ts",
     "build": "rimraf lib && cross-env NODE_ENV=production tsc",
     "test": "jest src/**/* --env node",
-    "test:coverage": "jest --coverage --color --env node",
+    "test:coverage": "jest src/**/* --coverage --color --env node",
     "ignore:config": "git update-index --assume-unchanged ./config.json",
     "ignore:config:clean": "git update-index --no-assume-unchanged ./config.json"
   },
