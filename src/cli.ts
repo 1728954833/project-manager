@@ -11,6 +11,7 @@ import { ExecUnit, ProjectItem } from './interface';
 import chalk from 'chalk';
 import { execOrder, openVsCode } from './util/system';
 import { prompt } from 'inquirer';
+import { configPath } from './util/project';
 
 const program = new Command();
 
@@ -20,7 +21,7 @@ program
 
 program
   .command('list')
-  .description('list all your project')
+  .description('list projects')
   .action(async () => {
     const projects = await getProjects();
     if (Object.keys(projects).length === 0) {
@@ -31,13 +32,9 @@ program
 
 program
   .command('add <name>')
-  .option(
-    '-p, --path <absolutePath>',
-    'input your project absolute path, the default is your current folder',
-    process.cwd()
-  )
-  .option('-d, --description <description>', 'input your project description')
-  .description('add project item')
+  .option('-p, --path <absolutePath>', 'absolute path', process.cwd())
+  .option('-d, --description <description>', 'description')
+  .description('add project')
   .action(
     async (name: string, args: Pick<ProjectItem, 'description' | 'path'>) => {
       const { path, description = '' } = args;
@@ -64,7 +61,7 @@ program
 
 program
   .command('remove <name>')
-  .description('delete project item')
+  .description('delete project')
   .action(async (name: string) => {
     const exists = await getProject(name);
     if (!exists) {
@@ -77,7 +74,7 @@ program
 
 program
   .command('open <name>')
-  .description('open project with vscode if you already install vscode')
+  .description('open project use vscode')
   .action(async (name: string) => {
     const projects = await getProjects();
     const project = projects[name];
@@ -104,7 +101,7 @@ program
 
 program
   .command('exec-list <name>')
-  .description('list project exec list')
+  .description('list project command')
   .action(async (name: string) => {
     const project = await getProject(name);
 
@@ -121,10 +118,10 @@ program
 
 program
   .command('exec-set <name>')
-  .description('add project exec order')
-  .requiredOption('-n, --name <name>', 'input your exec name')
-  .requiredOption('-e, --exec <exec>', 'input your exec order')
-  .option('-d, --description <description>', 'input your exec description')
+  .description('add command')
+  .requiredOption('-n, --name <name>', 'command name')
+  .requiredOption('-e, --exec <exec>', 'command')
+  .option('-d, --description <description>', 'description')
   .action(async (name: string, args: ExecUnit) => {
     const project = await getProject(name);
     if (!project) {
@@ -144,7 +141,10 @@ program
 
 program
   .command('exec-default <name>')
-  .requiredOption('-d, --default <default>', 'set you default run order')
+  .description(
+    'set default command, if set just need run `pm run [command name]`'
+  )
+  .requiredOption('-d, --default <default>', 'set default command')
   .action(async (name: string, args: { default: string }) => {
     const project = await getProject(name);
     if (!project) {
@@ -163,7 +163,8 @@ program
 
 program
   .command('exec-remove <name>')
-  .requiredOption('-n, --name <name>', 'input your exec name')
+  .description('delete command')
+  .requiredOption('-n, --name <name>', 'command name')
   .action(async (name: string, args: Pick<ExecUnit, 'name'>) => {
     const { name: execName } = args;
     const project = await getProject(name);
@@ -182,22 +183,24 @@ program
 
 program
   .command('run <name>')
-  .option('-n, --execName <execName>', 'input your exec name')
-  .description('exec order')
-  .action(async (name: string, { name: execName }: Pick<ExecUnit, 'name'>) => {
+  .option('-n, --execName <execName>', 'command name')
+  .description('execute command')
+  .action(async (name: string, args: Pick<ExecUnit, 'name'>) => {
+    let { name: execName } = args;
     const project = await getProject(name);
+
+    if (!project) {
+      return console.log(chalk.red(`run error, dont have this project`));
+    }
+
     if (!execName) {
       if (project.default) {
         execName = project.default;
       } else {
         return console.log(
-          chalk.red('run error, please input `-d <name>` choose your order')
+          chalk.red('run error, please input `-n <name>` choose your order')
         );
       }
-    }
-
-    if (!project) {
-      return console.log(chalk.red(`run error, dont have this project`));
     }
 
     if (!project.execUnit[execName]) {
@@ -209,4 +212,10 @@ program
     console.log(res);
   });
 
+program
+  .description('open config file')
+  .command('config')
+  .action(async () => {
+    openVsCode(configPath);
+  });
 program.parse();
