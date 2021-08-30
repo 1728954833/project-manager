@@ -36,14 +36,11 @@ program
     'input your project absolute path, the default is your current folder',
     process.cwd()
   )
-  .requiredOption(
-    '-d, --description <description>',
-    'input your project description'
-  )
+  .option('-d, --description <description>', 'input your project description')
   .description('add project item')
   .action(
     async (name: string, args: Pick<ProjectItem, 'description' | 'path'>) => {
-      const { path, description } = args;
+      const { path, description = '' } = args;
       const project: ProjectItem = {
         name,
         path,
@@ -57,7 +54,7 @@ program
         const { approval } = await prompt({
           type: 'confirm',
           message: 'Already have this project, Do you need to overwrite',
-          name: 'approvel',
+          name: 'approval',
         });
         if (!approval) return;
       }
@@ -127,10 +124,7 @@ program
   .description('add project exec order')
   .requiredOption('-n, --name <name>', 'input your exec name')
   .requiredOption('-e, --exec <exec>', 'input your exec order')
-  .requiredOption(
-    '-d, --description <description>',
-    'input your exec description'
-  )
+  .option('-d, --description <description>', 'input your exec description')
   .action(async (name: string, args: ExecUnit) => {
     const project = await getProject(name);
     if (!project) {
@@ -141,7 +135,7 @@ program
       const { approval } = await prompt({
         type: 'confirm',
         message: 'have repeat order, Do you need to overwrite',
-        name: 'approvel',
+        name: 'approval',
       });
       if (!approval) return;
     }
