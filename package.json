@@ -1,6 +1,6 @@
 {
   "name": "@dreamfalldown/project-manager",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "a cli about project manager",
   "contributors": [{
     "name": "dreamfalldown",
@@ -16,6 +16,7 @@
     "pm": "bin/index.js"
   },
   "scripts": {
+    "prebuild": "echo {} > config.json",
     "watch": "nodemon --watch './src' --ext 'ts, json, js' --exec 'nodemon ./index.ts'",
     "start": "ts-node src/cli.ts",
     "build": "rimraf lib && cross-env NODE_ENV=production tsc",
