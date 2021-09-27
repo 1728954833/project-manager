@@ -38,6 +38,10 @@ Project Manager use for manager your project
   add <name>             add project item
     -p [absolute path]
     -d [description]
+  update <name>          update project item
+    -p [absolute path]
+    -d [description]
+  rename <oldName> <newName> update project name
   remove <name>          delete project
   open <name>            open project use vscode
   exec-list <name>       list project command
@@ -59,7 +63,7 @@ Project Manager use for manager your project
 
 if you don't want use cli to set project you can use `pm config` to write your config
 
-**config key must equal name **
+**config key must equal name(project name, command name)**
 
 ```json
     "project name": {

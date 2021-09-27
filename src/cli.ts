@@ -60,6 +60,48 @@ program
   );
 
 program
+  .command('update <name>')
+  .option('-p, --path <absolutePath>', 'absolute path', process.cwd())
+  .option('-d, --description <description>', 'description')
+  .description('update project')
+  .action(async (name: string, args: Pick<ProjectItem, 'description' | 'path'>) => {
+    const { path, description = '' } = args;
+    const project: ProjectItem = {
+      name,
+      path,
+      description,
+      default: '',
+      execUnit: {},
+    };
+
+    const exists = await getProject(name);
+    if (!exists) return console.log(chalk.red('dont have this project'));
+    await saveProject(name, project);
+  });
+
+program
+  .command('rename <oldName> <newName>')
+  .description('update project')
+  .action(async (oldName: string, newName: string) => {
+    const existsOld = await getProject(oldName);
+    const existsNew = await getProject(newName);
+    if (!existsOld) return console.log(chalk.red('dont have this project'));
+    if (existsNew) {
+      const { approval } = await prompt({
+        type: 'confirm',
+        message: 'Already have this project, Do you need to overwrite',
+        name: 'approval',
+      });
+      if (!approval) return;
+    }
+    await saveProject(newName, {
+      ...existsOld,
+      name: newName
+    });
+    await deleteProject(oldName);
+  });
+
+program
   .command('remove <name>')
   .description('delete project')
   .action(async (name: string) => {
@@ -208,8 +250,7 @@ program
     }
 
     const execUnit = project.execUnit[execName];
-    const res = await execOrder(execUnit.exec, project.path);
-    console.log(res);
+    await execOrder(execUnit.exec, project.path);
   });
 
 program
