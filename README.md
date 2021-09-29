@@ -1,5 +1,5 @@
 # Project Manager
-
+**use npm update packages need save your config, after update use `pm config` to set it. otherwise it will be covered**
 Project Manager use for manager your project
 
 1. Quickly open file project
