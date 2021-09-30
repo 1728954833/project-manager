@@ -1,45 +1,44 @@
-import type { Command, ProjectFile, ProjectItem } from '../interface'
+import type { Command, Projects, Project } from '../interface'
 import { readJSON, writeJson } from 'fs-extra'
 import { resolve } from 'path'
 
 export const configPath = resolve(__dirname, '../../config.json')
 
-export const saveProject = async (
-  name: string,
-  projectItem: ProjectItem
-): Promise<ProjectFile> => {
-  const oldJson = await readJSON(configPath)
-
-  const newJson = Object.assign(oldJson, { [name]: projectItem })
-  await writeJson(configPath, newJson)
-  return newJson
-}
-
-export const deleteProject = async (name: string): Promise<boolean> => {
-  const json = await readJSON(configPath)
-  delete json[name]
-  await writeJson(configPath, json)
-  return true
-}
-
-export const getProjects = async (): Promise<ProjectFile> => {
+export const getProjects = async (): Promise<Projects> => {
   return readJSON(configPath)
 }
 
-export const getProject = async (name: string): Promise<ProjectItem> => {
-  const json = await readJSON(configPath)
-  return json[name]
+export const saveProject = async (
+  name: string,
+  project: Project
+): Promise<Projects> => {
+  const oldProjects = await getProjects()
+  const newProjects = Object.assign(oldProjects, { [name]: project })
+  await writeJson(configPath, newProjects)
+  return newProjects
 }
 
-export const saveProjectExecUnit = async (
-  name: string,
-  execUnit: Command
-): Promise<ProjectFile> => {
-  const projects = await readJSON(configPath)
-  const project = projects[name]
-  project.execUnit = Object.assign(project.execUnit, {
-    [execUnit.name]: execUnit,
-  })
+export const removeProject = async (name: string): Promise<boolean> => {
+  const projects = await getProjects()
+  delete projects[name]
   await writeJson(configPath, projects)
-  return projects
+  return true
+}
+
+export const getProject = async (name: string): Promise<Project> => {
+  const projects = await getProjects()
+  return projects[name]
+}
+
+export const saveCommand = async (
+  name: string,
+  command: Command
+): Promise<Project> => {
+  const project = await getProject(name)
+  if (!project) return project
+  project.commands = Object.assign(project.commands, {
+    [command.name]: command,
+  })
+  await saveProject(name, project)
+  return project
 }

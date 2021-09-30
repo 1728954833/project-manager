@@ -1,16 +1,17 @@
-import chalk from 'chalk'
+import type { Project } from '../interface'
 import { prompt } from 'inquirer'
 import { Command as CommanderCommand } from 'commander'
+import { openVsCode } from '../util/system'
+import { empty } from '../util/object'
+import { t } from '../constant'
+import { log, logVsCodeError, tlog, error, info } from '../util/log'
 import {
   saveProject,
   getProjects,
-  deleteProject,
+  removeProject,
   getProject,
   configPath,
 } from '../util/project'
-import { ProjectItem } from '../interface'
-import { openVsCode } from '../util/system'
-import { empty } from '../util/object'
 
 export const registerNormal = (program: CommanderCommand) => {
   program
@@ -18,10 +19,8 @@ export const registerNormal = (program: CommanderCommand) => {
     .description('list projects')
     .action(async () => {
       const projects = await getProjects()
-      if (empty(projects)) {
-        return console.log(`dont have project, please add`)
-      }
-      console.table(projects, ['path', 'description', 'default'])
+      if (empty(projects)) return info(t('PROJECT_IS_EMPTY'))
+      tlog<keyof Project>(projects, ['path', 'description', 'default'])
     })
 
   program
@@ -30,9 +29,9 @@ export const registerNormal = (program: CommanderCommand) => {
     .option('-d, --description <description>', 'description')
     .description('add project')
     .action(
-      async (name: string, args: Pick<ProjectItem, 'description' | 'path'>) => {
+      async (name: string, args: Pick<Project, 'description' | 'path'>) => {
         const { path, description = '' } = args
-        const project: ProjectItem = {
+        const project: Project = {
           name,
           path,
           description,
@@ -44,11 +43,12 @@ export const registerNormal = (program: CommanderCommand) => {
         if (exists) {
           const { approval } = await prompt({
             type: 'confirm',
-            message: 'Already have this project, Do you need to overwrite',
+            message: t('PROJECT_ALREADY_EXISTS'),
             name: 'approval',
           })
           if (!approval) return
         }
+
         await saveProject(name, project)
       }
     )
@@ -59,9 +59,9 @@ export const registerNormal = (program: CommanderCommand) => {
     .option('-d, --description <description>', 'description')
     .description('update project')
     .action(
-      async (name: string, args: Pick<ProjectItem, 'description' | 'path'>) => {
+      async (name: string, args: Pick<Project, 'description' | 'path'>) => {
         const { path, description = '' } = args
-        const project: ProjectItem = {
+        const project: Project = {
           name,
           path,
           description,
@@ -70,7 +70,7 @@ export const registerNormal = (program: CommanderCommand) => {
         }
 
         const exists = await getProject(name)
-        if (!exists) return console.log(chalk.red('dont have this project'))
+        if (!exists) return error(t('PROJECT_NOT_EXISTS'))
         await saveProject(name, project)
       }
     )
@@ -81,11 +81,11 @@ export const registerNormal = (program: CommanderCommand) => {
     .action(async (oldName: string, newName: string) => {
       const existsOld = await getProject(oldName)
       const existsNew = await getProject(newName)
-      if (!existsOld) return console.log(chalk.red('dont have this project'))
+      if (!existsOld) return error(t('PROJECT_NOT_EXISTS'))
       if (existsNew) {
         const { approval } = await prompt({
           type: 'confirm',
-          message: 'Already have this project, Do you need to overwrite',
+          message: t('PROJECT_ALREADY_EXISTS'),
           name: 'approval',
         })
         if (!approval) return
@@ -94,7 +94,7 @@ export const registerNormal = (program: CommanderCommand) => {
         ...existsOld,
         name: newName,
       })
-      await deleteProject(oldName)
+      await removeProject(oldName)
     })
 
   program
@@ -102,47 +102,26 @@ export const registerNormal = (program: CommanderCommand) => {
     .description('delete project')
     .action(async (name: string) => {
       const exists = await getProject(name)
-      if (!exists) {
-        return console.log(
-          chalk.red(`delete ${name} error, dont have this project`)
-        )
-      }
-      await deleteProject(name)
+      if (!exists) return error(t('PROJECT_NOT_EXISTS'))
+      await removeProject(name)
     })
 
   program
     .command('open <name>')
     .description('open project use vscode')
     .action(async (name: string) => {
-      const projects = await getProjects()
-      const project = projects[name]
+      const project = await getProject(name)
       if (project) {
-        await openVsCode(project.path).catch(() => {
-          console.log(chalk.red(`open ${project.path} error`))
-          console.log(chalk.red('1. make sure you install vscode'))
-          console.log(
-            chalk.red(
-              '2. if you install vscode please set vscode to global env'
-            )
-          )
-          console.log(
-            chalk.red(
-              `3. use command+shift+p and input ${chalk.yellow(
-                '`> install code`'
-              )} to set`
-            )
-          )
-          console.log(chalk.red('4. retry'))
-        })
+        await openVsCode(project.path).catch(() => logVsCodeError(project.path))
       } else {
-        console.log(chalk.red(`open ${name} error, dont have this project`))
+        log(t('PROJECT_NOT_EXISTS'))
       }
     })
 
   program
-    .description('open config file')
     .command('config')
+    .description('open config file')
     .action(async () => {
-      openVsCode(configPath)
+      openVsCode(configPath).catch(() => logVsCodeError(configPath))
     })
 }

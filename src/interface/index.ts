@@ -5,7 +5,7 @@ export interface Command {
   exec: string;
 }
 
-export interface ProjectItem {
+export interface Project {
   name: string;
   path: string;
   description?: string;
@@ -15,6 +15,6 @@ export interface ProjectItem {
   };
 }
 
-export interface ProjectFile {
-  [name: string]: ProjectItem;
+export interface Projects {
+  [name: string]: Project;
 }

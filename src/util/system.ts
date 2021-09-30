@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 
-export const execOrder = async (
+export const exec = async (
   order: string,
   path: string = process.cwd()
 ) => {
@@ -19,5 +19,5 @@ export const execOrder = async (
 }
 
 export const openVsCode = async (path: string) => {
-  return execOrder(`code ${path}`)
+  return exec(`code ${path}`)
 }

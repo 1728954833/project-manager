@@ -1,20 +1,20 @@
 require('dotenv').config({ path: '.env' })
-import type { ProjectItem, Command } from '../../interface'
+import type { Project, Command } from '../../interface'
 import {
   saveProject,
   getProjects,
   getProject,
-  deleteProject,
-  saveProjectExecUnit,
+  removeProject,
+  saveCommand,
 } from '../project'
 import { readJSON } from 'fs-extra'
 import { v4 as uuidV4 } from 'uuid'
 import { configPath } from '../project'
 
 describe('project with file', () => {
-  let project: ProjectItem
-  let overwriteProject: ProjectItem
-  let execUint: Command
+  let project: Project
+  let overwriteProject: Project
+  let command: Command
 
   beforeAll(() => {
     const uuid = uuidV4()
@@ -24,7 +24,7 @@ describe('project with file', () => {
       commands: {},
     }
 
-    execUint = {
+    command = {
       exec: 'test exec',
       name: 'test name',
       description: 'test description',
@@ -69,16 +69,16 @@ describe('project with file', () => {
     expect(json.path).toBe(overwriteProject.path)
   })
 
-  it('can write execUnit', async () => {
-    await saveProjectExecUnit(project.name, execUint)
+  it('can write command', async () => {
+    await saveCommand(project.name, command)
     const json = await getProject(project.name)
     expect(json.commands).toEqual({
-      [execUint.name]: execUint,
+      [command.name]: command,
     })
   })
 
   it('can delete project', async () => {
-    const res = await deleteProject(project.name)
+    const res = await removeProject(project.name)
     const json = await getProjects()
     expect(res).toEqual(true)
     expect(json).toEqual({})
