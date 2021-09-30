@@ -2,4 +2,5 @@
     "prettier.tabWidth": 2,
     "prettier.singleQuote": true,
     "eslint.run": "onSave",
+    "prettier.semi": false
 }

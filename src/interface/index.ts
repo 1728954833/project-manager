@@ -1,5 +1,5 @@
 // project
-export interface ExecUnit {
+export interface Command {
   description: string;
   name: string;
   exec: string;
@@ -10,8 +10,8 @@ export interface ProjectItem {
   path: string;
   description?: string;
   default?: string;
-  execUnit: {
-    [name: string]: ExecUnit;
+  commands: {
+    [name: string]: Command;
   };
 }
 

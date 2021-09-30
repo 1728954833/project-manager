@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync } from 'child_process'
 
 export const execOrder = async (
   order: string,
@@ -10,14 +10,14 @@ export const execOrder = async (
         cwd: path,
         maxBuffer: 2000000,
         stdio: 'inherit',
-      });
-      resolve(res);
+      })
+      resolve(res)
     } catch (err) {
-      reject(err);
+      reject(err)
     }
-  });
-};
+  })
+}
 
 export const openVsCode = async (path: string) => {
-  return execOrder(`code ${path}`);
-};
+  return execOrder(`code ${path}`)
+}
