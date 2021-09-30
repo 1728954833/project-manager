@@ -55,7 +55,7 @@ export const registerNormal = (program: CommanderCommand) => {
 
   program
     .command('update <name>')
-    .option('-p, --path <absolutePath>', 'absolute path', process.cwd())
+    .option('-p, --path <absolutePath>', 'absolute path')
     .option('-d, --description <description>', 'description')
     .description('update project')
     .action(
@@ -65,7 +65,6 @@ export const registerNormal = (program: CommanderCommand) => {
           name,
           path,
           description,
-          default: '',
           commands: {},
         }
 
@@ -111,17 +110,14 @@ export const registerNormal = (program: CommanderCommand) => {
     .description('open project use vscode')
     .action(async (name: string) => {
       const project = await getProject(name)
-      if (project) {
-        await openVsCode(project.path).catch(() => logVsCodeError(project.path))
-      } else {
-        log(t('PROJECT_NOT_EXISTS'))
-      }
+      if (!project) return log(t('PROJECT_NOT_EXISTS'))
+      openVsCode(project.path).catch(() => logVsCodeError(project.path))
     })
 
   program
     .command('config')
     .description('open config file')
-    .action(async () => {
+    .action(() => {
       openVsCode(configPath).catch(() => logVsCodeError(configPath))
     })
 }

@@ -1,7 +1,12 @@
 import chalk from 'chalk'
 import { prompt } from 'inquirer'
 import { Command as CommanderCommand } from 'commander'
-import { saveProject, saveCommand, getProject } from '../util/project'
+import {
+  saveProject,
+  saveCommand,
+  getProject,
+  removeCommand,
+} from '../util/project'
 import { Command } from '../interface'
 import { exec } from '../util/system'
 import { error, info, tlog } from '../util/log'
@@ -31,7 +36,7 @@ export const registerCommand = (program: CommanderCommand) => {
     .description('add command')
     .requiredOption('-n, --name <name>', 'command name')
     .requiredOption('-e, --exec <exec>', 'command')
-    .option('-d, --description <description>', 'description')
+    .option('-d, --description <description>', 'description', '')
     .action(async (name: string, args: Command) => {
       const project = await getProject(name)
       if (!project) return error(t('PROJECT_NOT_EXISTS'))
@@ -63,12 +68,11 @@ export const registerCommand = (program: CommanderCommand) => {
         return error(t('COMMAND_NOT_EXISTS'))
       }
 
-      delete project.commands[commandName]
-      await saveCommand(name, project.commands[commandName])
+      await removeCommand(name, commandName)
     })
 
   program
-    .command('run-default <name>')
+    .command('command-default <name>')
     .description(
       'set default command, if set just need run `pm run [command name]`'
     )

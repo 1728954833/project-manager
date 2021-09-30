@@ -42,3 +42,14 @@ export const saveCommand = async (
   await saveProject(name, project)
   return project
 }
+
+export const removeCommand = async (
+  name: string,
+  command: string
+): Promise<boolean> => {
+  const project = await getProject(name)
+  if (!project) return project
+  delete project.commands[command]
+  await saveProject(name, project)
+  return true
+}
