@@ -25,8 +25,8 @@ describe('command-cli', () => {
     await exec('pmx list-command test')
   })
 
-  it('pmx command-default', async () => {
-    await exec(`pmx command-default ${name} -d ls`)
+  it('pmx default-command', async () => {
+    await exec(`pmx default-command ${name} -d ls`)
     const project = await getProject(name)
     expect(project.default).toEqual('ls')
   })

@@ -72,7 +72,7 @@ export const registerCommand = (program: CommanderCommand) => {
     })
 
   program
-    .command('command-default <name>')
+    .command('default-command <name>')
     .description(
       'set default command, if set just need run `pm run [command name]`'
     )

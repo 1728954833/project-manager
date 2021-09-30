@@ -10,8 +10,8 @@ import {
   getProjects,
   removeProject,
   getProject,
-  configPath,
 } from '../util/project'
+import { configPath } from '../constant/file'
 
 export const registerNormal = (program: CommanderCommand) => {
   program
@@ -31,6 +31,7 @@ export const registerNormal = (program: CommanderCommand) => {
     .action(
       async (name: string, args: Pick<Project, 'description' | 'path'>) => {
         const { path, description = '' } = args
+
         const project: Project = {
           name,
           path,
@@ -120,4 +121,11 @@ export const registerNormal = (program: CommanderCommand) => {
     .action(() => {
       openVsCode(configPath).catch(() => logVsCodeError(configPath))
     })
+
+  // program
+  //   .command('setting')
+  //   .description('open setting file')
+  //   .action(() => {
+  //     openVsCode(userSettingPath).catch(() => logVsCodeError(configPath))
+  //   })
 }

@@ -1,8 +1,6 @@
 import type { Command, Projects, Project } from '../interface'
 import { readJSON, writeJson } from 'fs-extra'
-import { resolve } from 'path'
-
-export const configPath = resolve(__dirname, '../../config.json')
+import { configPath } from '../constant/file'
 
 export const getProjects = async (): Promise<Projects> => {
   return readJSON(configPath)

@@ -9,7 +9,7 @@ import {
 } from '../project'
 import { readJSON } from 'fs-extra'
 import { v4 as uuidV4 } from 'uuid'
-import { configPath } from '../project'
+import { configPath } from '../../constant/file'
 
 describe('project with file', () => {
   let project: Project
