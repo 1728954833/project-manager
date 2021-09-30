@@ -23,11 +23,11 @@ Project Manager use for manager your project
 
 4. add command under project folder
 
-   `pm exec-set react-app test -n start -e 'npm run start' -d 'run project'`
+   `pm add-command react-app test -n start -e 'npm run start' -d 'run project'`
 
 5. list your command
 
-   `pm exec-list react-app`
+   `pm list-command react-app`
 
 6. run
 
@@ -38,7 +38,7 @@ Project Manager use for manager your project
 ```
   list                   list projects
   add <name>             add project item
-    -p [absolute path]
+    -p [absolute path]   default path will according to your current address
     -d [description]
   update <name>          update project item
     -p [absolute path]
@@ -46,17 +46,17 @@ Project Manager use for manager your project
   rename <oldName> <newName> update project name
   remove <name>          delete project
   open <name>            open project use vscode
-  exec-list <name>       list project command
-  exec-set <name>        add project exec order
+  list-command <name>       list project command
+  add-command <name>        add project exec order
     -n [command name]
     -e [command]
     -d [description]
-  exec-default <name>    set default command, if set just need run `pm run [command name]`
+  default-command <name>    set default command, if set just need run `pm run [command name]`
     -d [default]
-  exec-remove <name>     delete command
-    -n [execName]
+  remove-command <name>     delete command
+    -n [commandName]
   run                    execute command
-    -n [execName]
+    -n [commandName]
   config                 open config file
   help [command]         display help for command
 ```
@@ -73,7 +73,7 @@ if you don't want use cli to set project you can use `pm config` to write your c
         "path": "path",
         "description": "description",
         "default": "default command",
-        "execUnit": {
+        "commands": {
             "command name": {
                 "name": "command name",
                 "exec": "command",

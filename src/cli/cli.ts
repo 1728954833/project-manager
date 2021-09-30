@@ -61,16 +61,18 @@ export const registerNormal = (program: CommanderCommand) => {
     .description('update project')
     .action(
       async (name: string, args: Pick<Project, 'description' | 'path'>) => {
+        const exists = await getProject(name)
+        if (!exists) return error(t('PROJECT_NOT_EXISTS'))
+
         const { path, description = '' } = args
         const project: Project = {
           name,
-          path,
-          description,
-          commands: {},
+          path: path || exists.path,
+          description: description || exists.description,
+          commands: exists.commands,
+          default: exists.default,
         }
 
-        const exists = await getProject(name)
-        if (!exists) return error(t('PROJECT_NOT_EXISTS'))
         await saveProject(name, project)
       }
     )
